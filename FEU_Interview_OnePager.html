@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FEU-Agentic Forecasting | One-Pager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            page-break-after: avoid;
+        }
+
+        header {
+            margin-bottom: 25px;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: #0066cc;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        h3 {
+            font-size: 13px;
+            color: #333;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .highlight-box {
+            background: #f0f4ff;
+            border-left: 4px solid #0066cc;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+
+        ul {
+            margin-left: 18px;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        strong {
+            color: #0066cc;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #fafafa;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card h4 {
+            color: #0066cc;
+            font-size: 12px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 10px;
+            background: #f0f4ff;
+            border-radius: 4px;
+        }
+
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        table {
+            width: 100%;
+            font-size: 12px;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        th, td {
+            padding: 6px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f0f4ff;
+            color: #0066cc;
+            font-weight: 600;
+        }
+
+        .footer {
+            font-size: 11px;
+            color: #999;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>FEU-Agentic Forecasting</h1>
+            <p class="subtitle">LLM-Powered Demand Forecasting Pipeline for FMCG/CPG</p>
+        </header>
+
+        <div class="section">
+            <h2>Overview</h2>
+            <p>Enterprise-grade demand forecasting system combining <strong>CrewAI agents for intelligent analysis</strong> with <strong>deterministic ML execution</strong> for core computation. Designed for DACH (Germany/Austria/Switzerland) category data with full generalization support for any time-series forecasting domain.</p>
+            <div class="highlight-box">
+                <strong>Core Capability:</strong> End-to-end pipeline supporting 35+ model families, automatic feature engineering, hierarchical reconciliation, and multi-horizon direct forecasting with walk-forward cross-validation.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Key Features & Capabilities</h2>
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">35+</div>
+                    <div class="metric-label">Model Families</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">8</div>
+                    <div class="metric-label">Pipeline Stages</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">10+</div>
+                    <div class="metric-label">Category Configs</div>
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="feature-card">
+                    <h4>Intelligent Feature Engineering</h4>
+                    <p>Leakage-free pipeline with ACF-informed lags, rolling statistics, seasonal decomposition, hierarchy temporal features, regime detection, and history embeddings—all automatically optimized per segment.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Auto Feature Availability Detection</h4>
+                    <p>Classifies every feature as known_in_future, history_only, partially_known, or excluded. History-only features converted to frozen key-level embeddings for inference.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Hierarchical Modeling & Reconciliation</h4>
+                    <p>5 reconciliation methods (MinT, bottom-up, WLS, OLS, top-down). Supports global-local, mixed-effects, and multi-level ensemble models for coherent cross-hierarchy forecasts.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Demand Pattern Intelligence</h4>
+                    <p>Syntetos-Boylan classification (smooth/erratic/intermittent/lumpy). Intermittency-aware segmentation prevents mixing regular and sparse keys in same segment.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Multi-Horizon Direct Forecasting</h4>
+                    <p>Direct h-step forecasting with horizon-specific models. Includes lag-specific bias calibration for accurate long-horizon predictions.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Bias Calibration & Correction</h4>
+                    <p>Segment × zero_fraction and lag-specific calibration factors learned from validation. Reduces systematic bias across demand types and forecast horizons.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Pipeline Architecture</h2>
+            <p style="font-size: 12px; margin-bottom: 10px;"><strong>8-Stage Sequential Workflow:</strong></p>
+            <ul style="font-size: 12px;">
+                <li><strong>EDA</strong> → Pattern classification, seasonality detection, ACF analysis</li>
+                <li><strong>Feature Availability</strong> → Auto-classify feature temporal availability</li>
+                <li><strong>Segmentation</strong> → GMM/KMeans clustering + hybrid business dimensions</li>
+                <li><strong>Feature Engineering</strong> → Deterministic feature pipeline with leakage prevention</li>
+                <li><strong>Model Training</strong> → 35+ model registry with intelligent model-level allocation</li>
+                <li><strong>Inference</strong> → Forward forecast + hierarchical reconciliation</li>
+                <li><strong>Diagnostics</strong> → WAPE metrics, accuracy analysis, deployment readiness</li>
+                <li><strong>Backtesting</strong> → Rolling-origin validation across forecast origins</li>
+            </ul>
+            <p style="font-size: 12px; margin-top: 10px;"><strong>3 Run Modes:</strong> Full pipeline (backtest + forecast) | Forecast-only (no validation) | Backtest-only (no forward forecast)</p>
+        </div>
+
+        <div class="section">
+            <h2>Model Ecosystem (35+ Families)</h2>
+            <table>
+                <tr>
+                    <th>Category</th>
+                    <th>Models</th>
+                </tr>
+                <tr>
+                    <td><strong>Tree-Based</strong></td>
+                    <td>LightGBM, XGBoost, CatBoost, Random Forest</td>
+                </tr>
+                <tr>
+                    <td><strong>Zero-Handling</strong></td>
+                    <td>Zero-Inflated, Hurdle Model, Tweedie</td>
+                </tr>
+                <tr>
+                    <td><strong>Hierarchical</strong></td>
+                    <td>Global-Local, Mixed-Effects, Multi-Level Ensemble</td>
+                </tr>
+                <tr>
+                    <td><strong>Statistical</strong></td>
+                    <td>ARIMA, SARIMA, ETS, Prophet, Croston, SBA, BSTS, Theta</td>
+                </tr>
+                <tr>
+                    <td><strong>Multi-Horizon</strong></td>
+                    <td>MH-LightGBM, MH-XGBoost, MH-Ensemble</td>
+                </tr>
+                <tr>
+                    <td><strong>Deep Learning</strong></td>
+                    <td>TFT, LSTM, NBEaTS, DeepAR, WaveNet (optional)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Technical Stack</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>ML & Forecasting</h3>
+                    <ul style="font-size: 12px;">
+                        <li>Scikit-learn, XGBoost, LightGBM</li>
+                        <li>CatBoost, PyTorch (deep learning)</li>
+                        <li>Statsmodels (ARIMA, ETS)</li>
+                        <li>Prophet, TBATS</li>
+                        <li>Hierarchical reconciliation (custom MinT)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Agentic & LLM</h3>
+                    <ul style="font-size: 12px;">
+                        <li>CrewAI (multi-agent framework)</li>
+                        <li>AWS Bedrock (Claude models)</li>
+                        <li>Databricks Foundational LLMs</li>
+                        <li>Pydantic (config validation)</li>
+                        <li>YAML (flexible configuration)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <h3>Data & Deployment</h3>
+                    <ul style="font-size: 12px;">
+                        <li>Pandas, NumPy (data processing)</li>
+                        <li>Parquet/CSV (artifact storage)</li>
+                        <li>Databricks (enterprise deployment)</li>
+                        <li>AWS Bedrock (local/cloud)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Quality & Testing</h3>
+                    <ul style="font-size: 12px;">
+                        <li>Walk-forward cross-validation</li>
+                        <li>Rolling-origin backtesting</li>
+                        <li>WAPE accuracy metrics</li>
+                        <li>Pytest unit tests</li>
+                        <li>End-to-end integration tests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Configuration & Flexibility</h2>
+            <ul style="font-size: 12px;">
+                <li><strong>Minimal Config:</strong> Auto-detection of train/val/test splits, hierarchy columns, and feature availability reduces manual configuration to essentials only</li>
+                <li><strong>Pre-built Configs:</strong> 10 production-ready DACH category configs (Skincare, Haircare, Deo, Fabrics, Foods, etc.)</li>
+                <li><strong>Design Toggles:</strong> Granular control over hierarchical modeling, feature availability, rich features, multi-horizon, bias calibration, reviewer agents</li>
+                <li><strong>Multi-Provider LLM:</strong> AWS Bedrock (local) or Databricks AIF (enterprise), simple YAML switch</li>
+                <li><strong>Period Formats:</strong> Supports YYYY-WW, YYYYWW, YYYY-MM, date strings with automatic normalization</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Deployment Options</h2>
+            <div class="grid-2">
+                <div class="feature-card">
+                    <h4>Local (AWS Bedrock)</h4>
+                    <p>Single-command execution with AWS credentials. Ideal for development, prototyping, and small-scale forecasting.</p>
+                    <p style="margin-top: 8px; font-size: 11px; color: #666;"><code>python runner.py --config config/config_de_skincare.yaml</code></p>
+                </div>
+                <div class="feature-card">
+                    <h4>Enterprise (Databricks)</h4>
+                    <p>Full integration with Databricks Workspace. Handles dependency installation and path resolution automatically. Scales to production workloads.</p>
+                    <p style="margin-top: 8px; font-size: 11px; color: #666;"><code>python databricks_runner.py --config /Workspace/.../config.yaml</code></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Outputs & Artifacts</h2>
+            <p style="font-size: 12px;">Structured outputs at each stage:</p>
+            <ul style="font-size: 12px;">
+                <li><strong>EDA Output:</strong> Metrics, pattern classification, seasonal analysis, context files</li>
+                <li><strong>Segmentation Output:</strong> Segment assignments, model allocation strategy, cluster profiles</li>
+                <li><strong>Model Artifacts:</strong> Trained models, feature metadata, forecasts (CSV/Parquet)</li>
+                <li><strong>Diagnostics:</strong> WAPE metrics per segment/group, accuracy charts, deployment verdict</li>
+                <li><strong>Backtest Results:</strong> Per-origin forecasts, aggregated accuracy, bias analysis</li>
+                <li><strong>Trace Logs:</strong> CrewAI agent logs for transparency and debugging</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Key Innovations</h2>
+            <ul style="font-size: 12px;">
+                <li>✓ <strong>Leakage-Free Features:</strong> All derived features automatically shifted by forecast_lag to prevent look-ahead bias</li>
+                <li>✓ <strong>Intelligent Model Allocation:</strong> Per-key vs pooled model decisions based on data sufficiency, volume, forecastability, uniqueness</li>
+                <li>✓ <strong>Hybrid Segmentation:</strong> Statistical clustering + business-domain dimensions + intermittency-aware merging</li>
+                <li>✓ <strong>LLM-Driven Insights:</strong> CrewAI agents provide reasoning, recommendations, and human-readable explanations throughout pipeline</li>
+                <li>✓ <strong>Production-Ready Reconciliation:</strong> MinT shrinkage ensures coherent multi-level forecasts while minimizing variance</li>
+                <li>✓ <strong>Bias-Aware Forecasting:</strong> Dual calibration (segment × zero_fraction + lag-specific) reduces systematic error</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p><strong>Project Type:</strong> Advanced ML Pipeline | <strong>Scale:</strong> 10,000+ keys | <strong>Use Case:</strong> Weekly FMCG demand forecasting | <strong>Status:</strong> Production-Ready</p>
+            <p style="margin-top: 8px;">Documentation: README.md | Configuration: config/ | Entry Points: runner.py, databricks_runner.py</p>
+        </div>
+    </div>
+</body>
+</html>
