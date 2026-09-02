@@ -1,0 +1,187 @@
+# =============================================================================
+# THAILAND — MODERN LOCAL CONFIG (base template)
+# Used by run_th_local.py, which overrides input_data_path / artifact paths /
+# splits per category. Models ALL accounts per category; LEGO (E1016) is the
+# eval yardstick. LLM-free deterministic path. See plan: beat LEGO per category.
+# =============================================================================
+
+# Local run: bedrock provider + empty databricks_base_path => local filesystem
+# paths. The deterministic pipeline (run_full_deterministic_pipeline) makes NO
+# LLM calls, so no provider credentials are needed.
+llm_provider: "bedrock"
+databricks_base_path: ""
+
+# Overridden per-category by the runner.
+input_data_path: "sourcedata/THAILAND/by_category/FOODS.parquet"
+artifact_base_path: "artifacts_th_local/FOODS"
+output_folder_path: ""
+
+# ---- core schema (TH-correct) ----
+prediction_key_cols:
+  - "key"                      # = Model_Hierarchy = CS_BARCODE_<account>; for E1016 == LEGO key
+timestamp_col: "year_week"     # renamed from Shipment_Week; ISO 'YYYY-WW' (e.g. 2026-02)
+target_col: "Actuals"
+time_format: "year_week"
+forecast_horizon: 13
+run_mode: "forecast_only"      # train <= val_end, forecast forward 13 weeks
+
+# ---- splits (final eval: cutoff 202602 -> forecast 202603..202615) ----
+# YYYYWW (no dash) — the canonical pipeline format DMH parses via int(). Runner
+# overrides for tuning. (Profiling weeks 2026-02..2026-15 == 202602..202615.)
+train_start: "202201"
+train_end:   "202541"
+val_start:   "202542"
+val_end:     "202602"          # cutoff; DMH forward origin
+test_start:  "202603"          # t+1
+test_end:    "202615"          # t+13
+
+country: "TH"
+country_subdivision: null
+
+# ---- forward-feature spine ----------------------------------------------------
+# These groups drive the DMH forward augmenter (fwd{h}_ known-future regressors).
+# Promo cols ARE populated in the future window (planned promos) -> real t+4/t+5
+# signal. Raw holiday cols are 0 in the future; the TH-aware calendar synthesiser
+# (country: TH) provides the real forward holiday features.
+price_features:
+  numeric: ["Discount_Percent"]
+  categorical: []
+promo_features:
+  numeric: ["promo_seq_num", "StringencyIndex_mean"]
+  categorical:
+    - "IsPromo"
+    - "Post_Promotion_Flag"
+    - "Baseline_Flag"
+    - "PromoTionType_On_Invoice"
+    - "PromoTionType_Off_Invoice"
+holiday_features:
+  numeric:
+    - "total_holidays"
+    - "Songkran_Festive"
+    - "Chinese_Lunar_New_Year_Festive"
+    - "Makha_Bucha"
+    - "Visakha_Bucha"
+    - "Asalha_Bucha"
+    - "King_Bhumibols_Birthday"
+    - "King_Vajiralongkorns_Birthday"
+    - "Chakri_Day"
+    - "Chulalongkorn_Day"
+    - "Coronation_Day"
+    - "Labor_Day"
+  categorical: []
+weather_features:
+  numeric: []
+  categorical: ["Summer", "Winter", "Monsoon"]
+
+# Account + product identity as explicit categoricals so the global pooled model
+# can discriminate channels/SKUs (auto-detect can drop high-cardinality cols).
+categorical_feature_cols:
+  - "ACTPM_Planning_Account_Code"
+  - "CS_BARCODE"
+  - "Week_Duration"
+  - "Month_Start"
+  - "Month_End"
+  - "Quarter_start"
+  - "Quarter_end"
+
+# =============================================================================
+design:
+  # ---- LLMs OFF ----
+  enable_reviewer: false
+  enable_insights_reports: false
+  enable_deep_models: false
+
+  # ---- modern feature pipeline ----
+  auto_detect_features: true
+  enable_feature_availability_detection: true
+  enable_rich_features: true
+  feature_availability:
+    recency_enabled: true
+    recency_lookback_periods: 4
+    min_active_keys: 5
+    auto_indicator_enabled: true
+  calendar_features:                 # CRITICAL: synthesises future TH holidays
+    enabled: true
+    overwrite_mode: always
+    include_lead_lag_windows: [1, 2, 4]
+
+  # ---- hierarchy / MinT reconciliation (TH-real columns) ----
+  enable_hierarchy_features: true
+  enable_hierarchical_models: false   # baseline: DMH is the engine; MinT recon as ablation later
+  reconciliation_method: "mint_shrink"
+  hierarchy_cols:
+    product: ["Category", "CS_BARCODE"]
+    customer: ["ACTPM_Planning_Account_Code"]
+  hierarchy_detection:
+    candidate_cols: ["Category", "CS_BARCODE", "ACTPM_Planning_Account_Code"]
+
+  # ---- tier-2 imputation + APG augmenter (cross-account per product) ----
+  enable_feature_imputation: true
+  imputation_level: ["CS_BARCODE"]
+
+  # ---- corrections ----
+  # BASELINE: post-processors OFF for a clean, FAST DMH-core signal. The slow
+  # single-threaded ones (recursive validation_predictions for apply_bias_calibration,
+  # Prophet top-down recon, SPLY) are re-added one-by-one as measured ablations.
+  # DMH already does built-in per-segment x per-horizon bias calibration internally.
+  enable_sply_correction: false
+  apply_moq_postprocessing: false
+  enable_top_down_reconciliation: false  # fragile (year_week int/str crash); use bias-cal + level8 blend instead
+  reconciliation_yoy_max_deviation: 0.35
+  enable_yoy_trend_adjustment: false
+  apply_bias_calibration: true           # validation-learned per-segment bias correction
+  bias_calibration_factor_min: 0.5
+  bias_calibration_factor_max: 2.5       # TH under-bias needs ~1.65x; 1.5 clipped it
+  bias_calibration_buckets: 3
+
+  # ---- speed (24-core local box) ----
+  parallel_training_workers: 16
+  recursive_validation_lag: 5
+  max_backtest_origins: 8
+  # Stage-5 legacy training is only a fallback when DMH is the forecast engine
+  # (DMH retrains its own global per-horizon models at inference). So train ONE
+  # lightgbm per group, no extra candidates / walk-forward CV. DMH quality is
+  # unaffected; this is the iteration-speed lever (was ~20 model families/group).
+  model_families: ["lightgbm"]
+  max_candidates_per_group: 1
+  max_model_candidates_per_group: 1
+  enable_walk_forward_cv: false
+  use_recursive_validation: false
+  # Force ALL keys into pooled SEGMENT models (no per-key models). DMH is global
+  # and ignores allocation; this collapses the legacy Stage-5 + inference-PHASE-5
+  # training from ~per-key (100s of models, trained TWICE) to ~n_segments (a
+  # handful) — the big iteration-speed win. DMH quality is unaffected.
+  model_level_allocation:
+    max_individual_pct: 0.0
+    min_individual_score: 1.0
+    volume_override_quantile: 1.0           # disable "top-volume -> individual" override
+    forecastability_override: 1.0           # disable "high-forecastability -> individual"
+    top_volume_bypass_quantile: null        # disable the top-volume bypass tier
+  regenerate_features_on_inference: false   # reuse Stage-4 features (skip slow regen)
+
+  # ---- diagnostic levels (TH-valid columns) ----
+  abs_error_calc_levels: [["CS_BARCODE", "Shipment_Week"]]
+  diagnostic_metric_levels: [["ACTPM_Planning_Account_Code"]]
+
+  # ===========================================================================
+  # Direct Multi-Horizon (the engine). Validated values; new priority/anchor
+  # knobs (Phase 2) are added once schema supports them.
+  # ===========================================================================
+  use_direct_multi_horizon: true
+  dmh_objective: "auto"
+  dmh_num_leaves: 63
+  dmh_learning_rate: 0.05
+  dmh_min_data_in_leaf: 200
+  dmh_lambda_l2: 1.0
+  dmh_num_boost_round: 3000    # full quality (the fast all-9 baseline used 1500 + n_seeds=1, which cost FAB_ENH ~0.04)
+  dmh_early_stopping_rounds: 150
+  dmh_recency_halflife_weeks: 26    # 26 > 0 in practice (recency=0 degraded the sparse-category wins in run3)
+  dmh_sply_blend_alpha: 1.0
+  dmh_n_seeds: 2     # full quality 3-head x 2-seed ensemble
+  dmh_top_k_features: 50
+  dmh_smooth_window: 1
+  dmh_enable_trajectory_features: true
+  dmh_enable_apg_features: true
+  dmh_enable_forward_features: true    # default true (known-future holidays/promo help most cats); see FABRIC_CLEANING A/B
+  dmh_apg_col: "CS_BARCODE"          # cross-account per-product sum signal
+  dmh_horizon_workers: 3             # 3: big all-keys categories (FABRIC_CLEANING/HAIR) OOM at 6-8; trade speed for stability

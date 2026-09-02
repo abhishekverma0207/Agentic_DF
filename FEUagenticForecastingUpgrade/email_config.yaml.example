@@ -1,0 +1,32 @@
+# Email Configuration for Pipeline Notifications
+# Copy this file to email_config.yaml and fill in your details
+
+# Enable/disable email notifications
+enabled: true
+
+# SMTP server configuration - Microsoft 365 / Outlook
+smtp_server: smtp.office365.com
+smtp_port: 587
+use_tls: true
+
+# Sender credentials
+sender_email: debonil.chowdhury@aria-is.com
+sender_password: your-password-here  # Your Outlook/Microsoft 365 password
+
+# Recipients (list of email addresses to notify)
+recipient_emails:
+  - debonil.chowdhury@aria-is.com
+  - recipient2@example.com  # Add additional recipients here
+  - recipient3@example.com
+
+# Notes for Microsoft 365 / Outlook users:
+# 1. Use your regular Microsoft 365 password (no App Password needed for most accounts)
+# 2. If you have MFA enabled and get authentication errors, you may need to:
+#    a) Create an App Password in your Microsoft account settings
+#    b) Or enable "Allow less secure apps" in your Office 365 admin settings
+# 3. For organizational accounts, check with your IT admin if SMTP is enabled
+
+# Notes for other SMTP providers:
+# - Gmail: smtp.gmail.com, port 587 (requires App Password if 2FA enabled)
+# - Yahoo: smtp.mail.yahoo.com, port 587
+# - Custom SMTP: Use your organization's SMTP settings

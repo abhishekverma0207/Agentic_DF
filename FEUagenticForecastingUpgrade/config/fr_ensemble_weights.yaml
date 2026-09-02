@@ -1,0 +1,566 @@
+default_weights:
+- 0.0
+- 0.0
+- 1.0
+mode: segment
+segment_weights:
+  CONDIMENT:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '03: Potentially delisted':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 0.8969
+    - 0.0466
+    - 0.3192
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.373
+    - 0.7073
+    '06: Reintroduced product':
+    - 1.1287
+    - 0.1385
+    - 0.6737
+    '08: More than 70% of zero sales weeks':
+    - 0.0093
+    - 1.4274
+    - 0.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 1.6078
+    - 0.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 3.0
+    - 1.1144
+    - 0.0
+    '12: Major trend change':
+    - 0.471
+    - 0.3528
+    - 0.6763
+    '14: More than 20% increase in future promo':
+    - 0.2007
+    - 0.5672
+    - 0.4114
+    '15: Zero promo':
+    - 0.0933
+    - 0.0
+    - 0.9053
+    '99: Rest':
+    - 0.0
+    - 0.0984
+    - 0.9097
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  COOKING AID:
+    '01: 100% zero sales':
+    - 3.0
+    - 3.0
+    - 0.0
+    '03: Potentially delisted':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 0.0087
+    - 0.0
+    - 0.9811
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.1233
+    - 0.8132
+    '06: Reintroduced product':
+    - 0.7711
+    - 0.0
+    - 0.8469
+    '08: More than 70% of zero sales weeks':
+    - 0.8456
+    - 1.0494
+    - 0.0008
+    '09: MOQ Orders':
+    - 0.0
+    - 0.158
+    - 0.4283
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.4635
+    - 0.3881
+    - 0.5016
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 1.9477
+    - 0.3616
+    - 0.1206
+    '12: Major trend change':
+    - 0.0007
+    - 0.2918
+    - 0.7774
+    '14: More than 20% increase in future promo':
+    - 0.0055
+    - 0.7957
+    - 0.1769
+    '15: Zero promo':
+    - 0.1536
+    - 0.3417
+    - 0.531
+    '99: Rest':
+    - 0.2888
+    - 0.2448
+    - 0.4917
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  DEODORANT & FRAGRANCE:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '03: Potentially delisted':
+    - 3.0
+    - 3.0
+    - 0.0
+    '04: NPD':
+    - 1.2519
+    - 0.0
+    - 0.4224
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.5782
+    - 0.6746
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 0.97
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 1.2418
+    - 0.0
+    '09: MOQ Orders':
+    - 2.9998
+    - 0.6401
+    - 0.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.6517
+    - 0.4356
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.3652
+    - 0.0
+    - 0.926
+    '12: Major trend change':
+    - 0.0
+    - 0.1438
+    - 0.9325
+    '15: Zero promo':
+    - 0.7397
+    - 0.0
+    - 0.5774
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 0.9981
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  FABRIC CLEANING:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 0.0
+    - 0.5471
+    - 0.7255
+    '05: NPD (26-52)':
+    - 0.1303
+    - 0.5548
+    - 0.3178
+    '06: Reintroduced product':
+    - 0.0
+    - 1.117
+    - 0.0
+    '07: Highly Promoted':
+    - 3.0
+    - 0.8866
+    - 0.0
+    '08: More than 70% of zero sales weeks':
+    - 3.0
+    - 0.0
+    - 0.91
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 0.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 3.0
+    - 1.3091
+    - 0.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 1.1351
+    - 0.8655
+    - 0.0
+    '12: Major trend change':
+    - 0.6597
+    - 1.3551
+    - 0.1437
+    '14: More than 20% increase in future promo':
+    - 2.4453
+    - 0.6463
+    - 0.222
+    '15: Zero promo':
+    - 0.0415
+    - 0.0
+    - 0.7916
+    '99: Rest':
+    - 0.225
+    - 0.0
+    - 0.7476
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  FABRIC ENHANCER:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 1.3237
+    - 0.0
+    - 0.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.3317
+    '08: More than 70% of zero sales weeks':
+    - 0.9858
+    - 0.0
+    - 2.8706
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.7056
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 3.0
+    - 0.3434
+    - 0.5645
+    '12: Major trend change':
+    - 1.1651
+    - 2.8767
+    - 0.0072
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 0.6853
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.2312
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  HAIR CARE:
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 1.3794
+    - 0.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 0.0
+    '15: Zero promo':
+    - 0.001
+    - 0.3196
+    - 0.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  HOME & HYGIENE:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '03: Potentially delisted':
+    - 2.6462
+    - 2.9932
+    - 0.0
+    '04: NPD':
+    - 0.184
+    - 0.9572
+    - 0.0
+    '05: NPD (26-52)':
+    - 0.8027
+    - 0.5124
+    - 0.3046
+    '06: Reintroduced product':
+    - 1.1444
+    - 0.4372
+    - 0.5348
+    '07: Highly Promoted':
+    - 1.8216
+    - 0.2243
+    - 0.5343
+    '08: More than 70% of zero sales weeks':
+    - 0.038
+    - 0.0
+    - 0.9656
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.5213
+    - 0.8773
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.7821
+    '12: Major trend change':
+    - 0.0
+    - 1.9371
+    - 0.0063
+    '13: More than 75% future promo period':
+    - 0.0
+    - 0.0
+    - 0.86
+    '14: More than 20% increase in future promo':
+    - 0.0
+    - 0.3006
+    - 0.3697
+    '15: Zero promo':
+    - 1.1381
+    - 0.0
+    - 0.0
+    '99: Rest':
+    - 0.0
+    - 0.1821
+    - 0.8685
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  ICE CREAM CATEGORY:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '03: Potentially delisted':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 0.0
+    - 0.455
+    - 0.0338
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.69
+    - 0.5164
+    '06: Reintroduced product':
+    - 0.0573
+    - 0.6595
+    - 0.427
+    '07: Highly Promoted':
+    - 0.0051
+    - 0.0
+    - 0.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.8243
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.7091
+    - 0.0976
+    - 0.8232
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.3844
+    - 0.7195
+    '12: Major trend change':
+    - 0.2379
+    - 0.0
+    - 0.8243
+    '14: More than 20% increase in future promo':
+    - 1.3331
+    - 0.0416
+    - 0.0
+    '15: Zero promo':
+    - 0.0071
+    - 0.2159
+    - 0.736
+    '99: Rest':
+    - 0.4014
+    - 0.338
+    - 0.3761
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  ORAL CARE:
+    '01: 100% zero sales':
+    - 2.2089
+    - 3.0
+    - 0.0
+    '04: NPD':
+    - 0.0294
+    - 0.0078
+    - 1.0221
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.6218
+    - 0.5143
+    '06: Reintroduced product':
+    - 1.5798
+    - 0.8023
+    - 0.0
+    '08: More than 70% of zero sales weeks':
+    - 3.0
+    - 1.1668
+    - 0.0011
+    '09: MOQ Orders':
+    - 0.0
+    - 1.3227
+    - 0.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.9308
+    - 0.9798
+    - 0.1233
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.4202
+    - 0.6686
+    '12: Major trend change':
+    - 1.2509
+    - 0.0587
+    - 0.7612
+    '15: Zero promo':
+    - 0.242
+    - 0.1149
+    - 0.6877
+    '99: Rest':
+    - 0.0
+    - 0.3474
+    - 0.7893
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  OTH FOOD:
+    '05: NPD (26-52)':
+    - 0.0
+    - 2.7171
+    - 0.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.7951
+    '12: Major trend change':
+    - 0.6601
+    - 0.0
+    - 0.6636
+    '15: Zero promo':
+    - 0.8842
+    - 0.0
+    - 0.567
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  PLANT BASED MEAT:
+    '01: 100% zero sales':
+    - 3.0
+    - 3.0
+    - 0.0
+    '04: NPD':
+    - 0.5109
+    - 3.0
+    - 0.2394
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 0.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.9237
+    '09: MOQ Orders':
+    - 0.0675
+    - 0.3656
+    - 0.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 1.7162
+    - 0.3422
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  SKIN CLEANSING:
+    '01: 100% zero sales':
+    - 0.0
+    - 0.0
+    - 1.0
+    '03: Potentially delisted':
+    - 0.0
+    - 0.0
+    - 1.0
+    '04: NPD':
+    - 0.5725
+    - 0.6175
+    - 0.1415
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 0.9781
+    '06: Reintroduced product':
+    - 0.0
+    - 1.6671
+    - 0.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.9778
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.975
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 0.9739
+    '12: Major trend change':
+    - 0.0
+    - 1.9651
+    - 0.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0008
+    '99: Rest':
+    - 0.1618
+    - 0.6202
+    - 0.6221
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0

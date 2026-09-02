@@ -1,0 +1,142 @@
+llm_provider: databricks
+databricks_base_path: /Volumes/pds_feu_931272_dev/data_science_team/uk_rerun_lego_features/MINI_MEAL/
+input_data_path: sourcedata/MINI_MEAL.csv
+artifact_base_path: artifacts
+output_folder_path: /Volumes/pds_feu_931272_dev/data_science_team/uk_rerun_lego_features/MINI_MEAL/
+prediction_key_cols:
+- key
+timestamp_col: year_week
+target_col: actual_sales
+time_format: year_week
+forecast_horizon: 13
+run_mode: backtest_and_forecast
+train_start: ''
+train_end: ''
+val_start: ''
+val_end: ''
+test_start: ''
+test_end: ''
+design:
+  enable_hierarchy_features: true
+  enable_hierarchical_models: true
+  reconciliation_method: mint_shrink
+  hierarchy_cols:
+    product:
+    - market_name
+    - segment_name
+    - brand_name
+    - variant_name
+    - cs_gtin
+    customer:
+    - APG_code
+  enable_feature_availability_detection: true
+  auto_detect_features: true
+  enable_rich_features: true
+  enable_sply_correction: true
+  enable_yoy_trend_adjustment: false
+  enable_reviewer: false
+  enable_multi_horizon: true
+  enable_walk_forward_cv: true
+  apply_bias_calibration: true
+  # Per-model-group training PARALLELISM (pure speed, zero accuracy cost).
+  # LightGBM/XGBoost release the GIL during fit, so threads provide real
+  # parallelism without forking. OMP_NUM_THREADS is auto-capped at
+  # cpu_count // N per worker so the threads do not oversubscribe cores.
+  # use_recursive_validation and max_candidates_per_group stay at their
+  # accuracy-preserving defaults (true / 3) — only override them if you
+  # have explicitly validated the accuracy delta is acceptable.
+  parallel_training_workers: 256
+  # Validate each candidate model on its lag-5 recursive WAPE only.
+  # Cuts the recursive walk from 13 weeks to 5 (2.6x faster) AND
+  # picks candidates by the exact lag the lag-4 backtest measures.
+  recursive_validation_lag: 5
+  # Emit prediction_post_moq alongside predicted for DIQ downstream. For
+  # SKUs whose historical orders show a strong fixed-case-pack / pallet
+  # multiple (NPD, reintroduced, highly-promoted, MOQ-driven), rounds the
+  # forecast to that multiple. Falls back to predicted for non-MOQ keys
+  # so downstream can consume one column unconditionally.
+  apply_moq_postprocessing: true
+  enable_top_down_reconciliation: true
+  # Cap the rolling-origin backtest to 8 origins, selected so that the
+  # lag-forecast_lag forecast from each origin lands on one of the
+  # LATEST 8 test weeks (i.e. train_cutoff = target_week - forecast_lag).
+  # For test_end=202614, forecast_lag=4 → origins with train_cutoff
+  # 202603..202610, producing lag-4 forecasts for weeks 202607..202614.
+  # This shortens backtest runtime while keeping the eval metric
+  # directly comparable to the full benchmark (per-week lag-4 WAPE).
+  max_backtest_origins: 8
+  feature_availability:
+    recency_enabled: true
+    recency_lookback_periods: 4
+    min_active_keys: 5
+    auto_indicator_enabled: true
+  calendar_features:
+    enabled: true
+    overwrite_mode: always
+    include_lead_lag_windows:
+    - 1
+    - 2
+    - 4
+  hierarchy_detection:
+    candidate_cols:
+    - APG_code
+    - APG_description
+    - forecast_familygroup
+    - forecast_familygroup_description
+    - brand_name
+    - segment_name
+    - form_name
+    - sub_form_name
+    - sub_sector_name
+    - sector_name
+    - market_name
+    - variant_name
+    - size_pack_name
+    - CPL_code
+    - cs_gtin
+    - planning_customer_code
+  reconciliation_yoy_max_deviation: 0.35
+  bias_calibration_factor_min: 0.5
+  bias_calibration_factor_max: 1.5
+  bias_calibration_buckets: 3
+
+  # -------------------------------------------------------------------------
+  # Direct Multi-Horizon (upgrade over recursive inference).
+  #
+  # CATEGORY-AGNOSTIC and MARKET-AGNOSTIC recipe - the ensemble weights are
+  # LEARNED from validation data per dataset (dmh_objective='auto'), so this
+  # same block works for every UK/DE/TH/DACH category without hand-tuning.
+  # See utils/direct_multihorizon.py for the implementation.  Validated on
+  # UK DEO/COOKING: beats PristineTVF benchmark on both WMAPE and |bias|
+  # after filtering the benchmark's exact-match rows.
+  # -------------------------------------------------------------------------
+  use_direct_multi_horizon: true
+  dmh_objective: "auto"
+  dmh_num_leaves: 63
+  dmh_learning_rate: 0.05
+  dmh_min_data_in_leaf: 200
+  dmh_lambda_l2: 1.0
+  dmh_num_boost_round: 3000
+  dmh_early_stopping_rounds: 150
+  dmh_recency_halflife_weeks: 26
+  dmh_sply_blend_alpha: 1.0
+  dmh_n_seeds: 3
+  dmh_top_k_features: 50
+  dmh_smooth_window: 1
+  dmh_enable_trajectory_features: true
+  dmh_enable_apg_features: true
+  dmh_enable_forward_features: true
+
+  # -----------------------------------------------------------------------------
+  # Backtest speed knobs (SAFE — zero accuracy impact).
+  #   - dmh_cache_features_across_origins: preload feature CSVs + run augmenters
+  #     ONCE per backtest (was per-origin), saves ~50-120s per origin
+  #   - dmh_backtest_horizons: [4] = only train h=4 at each origin since the
+  #     lag-4 backtest metric only measures h=4 forecasts, saves 13× compute
+  # Every other DMH knob stays at production settings so the 3-seed ensemble
+  # auto-tune (which is what beats the benchmark on bias) is unchanged.
+  # -----------------------------------------------------------------------------
+  dmh_cache_features_across_origins: true
+  dmh_backtest_horizons: [4]
+country: UK
+country_subdivision: ENG

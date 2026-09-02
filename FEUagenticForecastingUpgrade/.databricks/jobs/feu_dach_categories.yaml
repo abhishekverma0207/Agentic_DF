@@ -1,0 +1,220 @@
+# =============================================================================
+# Databricks Job Configuration: FEU DACH Category Pipelines
+# =============================================================================
+# 10 independent jobs — one per DACH category. Run ALL in parallel.
+# Each job runs the full pipeline on the EXISTING shared cluster.
+#
+# HOW TO DEPLOY (no CLI needed — use Databricks UI):
+#
+# 1. Go to Databricks → Workflows → Jobs → Create Job
+# 2. For each category below:
+#    - Name: copy the job name
+#    - Task: Spark Python Task
+#    - Python file: /Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade/databricks_runner.py
+#    - Parameters: copy the parameters list
+#    - Cluster: select "eda_stage_cluster_BATCH2" (existing cluster)
+# 3. Click Create → Run Now
+#
+# To run ALL 10 in parallel: just click "Run Now" on each job
+# =============================================================================
+
+# CLUSTER: Use existing shared cluster (no new cluster per job)
+# Cluster name: eda_stage_cluster_BATCH2
+# 64 GB · 16 Cores · DBR 15.4 LTS · Spark 3.5.0 · Scala 2.12
+
+# All jobs use:
+#   existing_cluster_id: "<your_cluster_id>"
+#   (find it in Compute → eda_stage_cluster_BATCH2 → Advanced → JSON → cluster_id)
+
+resources:
+  jobs:
+
+    feu_dach_skincare:
+      name: "FEU-DACH-SKIN_CARE"
+      description: "Full pipeline for DACH Skin Care (317 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_skincare_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_skincleansing:
+      name: "FEU-DACH-SKIN_CLEANSING"
+      description: "Full pipeline for DACH Skin Cleansing (2,375 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_skincleansing_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_deo:
+      name: "FEU-DACH-DEODORANTS_FRAGRANCES"
+      description: "Full pipeline for DACH Deodorants & Fragrances (3,215 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_deo_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_dressings:
+      name: "FEU-DACH-DRESSINGS"
+      description: "Full pipeline for DACH Dressings (1,091 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_dressings_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_fab_clean:
+      name: "FEU-DACH-FABRIC_CLEANING"
+      description: "Full pipeline for DACH Fabric Cleaning (444 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_fab_clean_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_haircare:
+      name: "FEU-DACH-HAIR_CARE"
+      description: "Full pipeline for DACH Hair Care (126 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_haircare_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_healthy_snack:
+      name: "FEU-DACH-HEALTHY_SNACKING"
+      description: "Full pipeline for DACH Healthy Snacking (1,059 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_healthy_snack_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_home_hygiene:
+      name: "FEU-DACH-HOME_HYGIENE"
+      description: "Full pipeline for DACH Home & Hygiene (882 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_home_hygiene_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_oral_care:
+      name: "FEU-DACH-ORAL_CARE"
+      description: "Full pipeline for DACH Oral Care (221 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_oral_care_databricks.yaml"
+              - "--stage"
+              - "full"
+
+    feu_dach_cooking_aids:
+      name: "FEU-DACH-SCRATCH_COOKING_AIDS"
+      description: "Full pipeline for DACH Scratch Cooking Aids (7,818 keys)"
+      max_concurrent_runs: 1
+      email_notifications:
+        on_start: ["${var.repo_user}"]
+        on_success: ["${var.repo_user}"]
+        on_failure: ["${var.repo_user}"]
+      tasks:
+        - task_key: "full_pipeline"
+          existing_cluster_id: "${var.cluster_id}"
+          spark_python_task:
+            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            parameters:
+              - "--config"
+              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_cooking_aids_databricks.yaml"
+              - "--stage"
+              - "full"

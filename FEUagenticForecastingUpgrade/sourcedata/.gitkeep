@@ -1,0 +1,3 @@
+# This file keeps the sourcedata/ folder in git
+# Place your input demand data files here (e.g., demand_data.parquet)
+# Data files are ignored by .gitignore to prevent uploading large files

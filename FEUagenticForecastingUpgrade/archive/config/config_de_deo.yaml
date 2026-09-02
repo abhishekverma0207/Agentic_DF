@@ -1,0 +1,137 @@
+# =============================================================================
+# FEU-AGENTIC-FORECASTING — DACH Deodorants Fragrances
+# =============================================================================
+# Simplified config with auto-detected features.
+# 3215 unique keys | History: 2023-10 to 2026-10 | 42 future weeks
+# =============================================================================
+
+# LLM Provider: "bedrock" (local AWS Claude) or "databricks" (Databricks AIF)
+llm_provider: "bedrock"
+
+# Databricks Unity Catalog Volumes base path (only when llm_provider="databricks")
+# databricks_base_path: "/Volumes/pds_feu_931272_dev/data_science_team/dach_run/DEODORANTS_FRAGRANCES/"
+
+# =============================================================================
+# DATA PATHS
+# =============================================================================
+input_data_path: "sourcedata/DACH/DEODORANTS_FRAGRANCES.csv"
+artifact_base_path: "artifacts_dach_deo"
+
+# Optional: extra Parquet output folder (leave blank to disable)
+# output_folder_path: ""
+
+# =============================================================================
+# CORE SCHEMA
+# =============================================================================
+prediction_key_cols:
+  - "Model_Hierarchy"
+
+timestamp_col: "Shipment_week"
+target_col: "Actuals"
+
+# Time format: "year_week" for YYYY-WW (dash-separated week format in DACH data)
+time_format: "year_week"
+
+# Forecast horizon (weeks ahead)
+forecast_horizon: 13
+
+# =============================================================================
+# RUN MODE
+# =============================================================================
+# "backtest_and_forecast" — Full pipeline: backtest + forward forecast (default)
+# "forecast_only"         — Train on all history, produce forward forecast only
+# "backtest_only"         — Backtesting for accuracy validation only
+run_mode: "backtest_and_forecast"
+
+# =============================================================================
+# TRAIN / VAL / TEST SPLITS
+# =============================================================================
+# Option 1: Leave empty for AUTO-DETECTION (recommended for backtesting mode)
+#   - System detects history cutoff from data
+#   - test = last (forecast_horizon + 5) weeks of history
+#   - val  = prior forecast_horizon weeks
+#   - train = everything before val
+#
+# Option 2: Specify explicitly to override
+#   train_start: "2023-10"
+#   train_end:   "2025-30"
+#   val_start:   "2025-31"
+#   val_end:     "2025-43"
+#   test_start:  "2025-44"
+#   test_end:    "2026-10"
+# =============================================================================
+train_start: ""
+train_end: ""
+val_start: ""
+val_end: ""
+test_start: ""
+test_end: ""
+
+# =============================================================================
+# DESIGN CONFIGURATION
+# =============================================================================
+design:
+  # Phase 3: Hierarchical Modeling & Features
+  enable_hierarchy_features: true
+  enable_hierarchical_models: true
+  reconciliation_method: "mint_shrink"
+  hierarchy_cols: []
+
+  # Feature Availability Detection
+  enable_feature_availability_detection: true
+  auto_detect_features: true
+
+  # Phase 6: Rich Feature Engineering
+  enable_rich_features: true
+
+  # SPLY post-prediction correction (final adjustment)
+  enable_sply_correction: true
+
+  # YoY trend adjustment (pre-reconciliation)
+  enable_yoy_trend_adjustment: false
+
+  # Reviewer agent (false = faster, fewer tokens)
+  enable_reviewer: false
+
+  # Multi-horizon direct forecasting
+  enable_multi_horizon: true
+
+  # Walk-forward cross-validation
+  enable_walk_forward_cv: true
+
+  # Bias calibration
+  apply_bias_calibration: true
+
+  # Top-down category reconciliation (fallback)
+  enable_top_down_reconciliation: false
+
+  # Tightened bias calibration bounds (was 0.2-2.0)
+  bias_calibration_factor_min: 0.5
+  bias_calibration_factor_max: 1.5
+
+  # -------------------------------------------------------------------------
+  # Direct Multi-Horizon (upgrade over recursive inference).
+  #
+  # CATEGORY-AGNOSTIC and MARKET-AGNOSTIC recipe - the ensemble weights are
+  # LEARNED from validation data per dataset (dmh_objective='auto'), so this
+  # same block works for every UK/DE/TH/DACH category without hand-tuning.
+  # See utils/direct_multihorizon.py for the implementation.  Validated on
+  # UK DEO/COOKING: beats PristineTVF benchmark on both WMAPE and |bias|
+  # after filtering the benchmark's exact-match rows.
+  # -------------------------------------------------------------------------
+  use_direct_multi_horizon: true
+  dmh_objective: "auto"
+  dmh_num_leaves: 63
+  dmh_learning_rate: 0.05
+  dmh_min_data_in_leaf: 200
+  dmh_lambda_l2: 1.0
+  dmh_num_boost_round: 3000
+  dmh_early_stopping_rounds: 150
+  dmh_recency_halflife_weeks: 26
+  dmh_sply_blend_alpha: 1.0
+  dmh_n_seeds: 3
+  dmh_top_k_features: 50
+  dmh_smooth_window: 1
+  dmh_enable_trajectory_features: true
+  dmh_enable_apg_features: true
+  dmh_enable_forward_features: true

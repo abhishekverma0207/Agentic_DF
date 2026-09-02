@@ -1,0 +1,20 @@
+%% Pipeline flowchart
+flowchart TD
+  A[1. EDA\nSyntetos-Boylan, ACF] --> B[2. Feature Availability\nknown/partial/history/excluded]
+  B --> C[3. Segmentation\nGMM/KMeans/HDBSCAN, hybrid dims]
+  C --> D[4. Feature Engineering\nlag, rolling, seasonal, hierarchy]
+  D --> E[5. Model Training\n35+ families, walk-forward CV]
+  E --> F[6. Inference\nfeature regen, impute, calibration, reconciliation]
+  F --> G[7. Diagnostics\nWAPE, accuracy, verdict]
+  G --> H[8. Backtesting\nrolling-origin backtests]
+
+  subgraph modes
+    M1[backtest_and_forecast]
+    M2[forecast_only]
+    M3[backtest_only]
+  end
+  M1 --> A
+  M2 --> A
+  M3 --> A
+
+  classDef mode fill:#f9f,stroke:#333,stroke-width:1px;

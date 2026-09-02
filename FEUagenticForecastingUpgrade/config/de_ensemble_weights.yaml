@@ -1,0 +1,452 @@
+default_weights:
+- 0.0
+- 0.0
+- 1.0
+mode: segment
+segment_weights:
+  DEODORANTS & FRAGRANCES:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.6004
+    - 0.1471
+    - 0.3057
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 1.2211
+    - 0.2805
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  DRESSINGS:
+    '04: NPD':
+    - 0.0763
+    - 0.3784
+    - 0.8076
+    '05: NPD (26-52)':
+    - 0.1036
+    - 0.0776
+    - 0.8579
+    '06: Reintroduced product':
+    - 0.1161
+    - 1.12
+    - 0.2102
+    '08: More than 70% of zero sales weeks':
+    - 0.1051
+    - 0.0787
+    - 0.8559
+    '09: MOQ Orders':
+    - 0.0127
+    - 0.0095
+    - 0.9826
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.1801
+    - 0.1349
+    - 0.753
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0248
+    - 1.3756
+    - 0.0897
+    '12: Major trend change':
+    - 0.1907
+    - 0.1429
+    - 0.7384
+    '15: Zero promo':
+    - 0.0871
+    - 0.5975
+    - 0.3978
+    '99: Rest':
+    - 0.4039
+    - 0.1264
+    - 0.5318
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  FABRIC CLEANING:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.4353
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  HAIR CARE:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0819
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.1242
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.1423
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.1799
+    - 0.1306
+    - 0.9236
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  HEALTHY SNACKING:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.0
+    '14: More than 20% increase in future promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.2013
+    - 0.7806
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  HOME & HYGIENE:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  ORAL CARE:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.7805
+    - 0.576
+    '06: Reintroduced product':
+    - 0.3572
+    - 0.0
+    - 0.6574
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  SCRATCH COOKING AIDS:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.0
+    '14: More than 20% increase in future promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  SKIN CARE:
+    '04: NPD':
+    - 0.0457
+    - 1.1009
+    - 0.8522
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.0
+    - 0.0
+    - 1.0
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0
+  SKIN CLEANSING:
+    '04: NPD':
+    - 0.0
+    - 0.0
+    - 1.0
+    '05: NPD (26-52)':
+    - 0.0
+    - 0.0
+    - 1.0
+    '06: Reintroduced product':
+    - 0.0
+    - 0.0
+    - 1.0
+    '08: More than 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '09: MOQ Orders':
+    - 0.0
+    - 0.0
+    - 1.0
+    '10: Non Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '11: Promo - 40 to 70% of zero sales weeks':
+    - 0.0
+    - 0.0
+    - 1.0
+    '12: Major trend change':
+    - 0.0
+    - 0.0
+    - 1.0
+    '15: Zero promo':
+    - 0.1069
+    - 0.7807
+    - 0.0585
+    '99: Rest':
+    - 0.0
+    - 0.0
+    - 1.0
+    _default:
+    - 0.0
+    - 0.0
+    - 1.0

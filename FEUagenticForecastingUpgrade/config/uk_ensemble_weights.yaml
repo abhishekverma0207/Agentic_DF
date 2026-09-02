@@ -1,0 +1,29 @@
+# Frozen rf-ensemble weights per UK category for utils/uk_engine.py.
+# DIQ_forecast = w_global * global_GBM + w_local * per_cat_GBM + w_lego * prediction_rf
+#
+# Source: pooled 7-origin GTIN-lag-4 minimisation of WAPE on 202609..202615 origins
+# (artifacts_uk_local/per_origin/global_7.parquet + percat_7.parquet + prediction_rf).
+# Each (g,l,rf) triple is the global minimiser on a 0.1-step simplex.
+# Frozen 2026-06.  Retune: rerun scripts/uk_per_origin.py and lift the printed weights.
+
+weights:
+  "DEODORANT & FRAGRANCE": {global: 0.1, local: 0.5, lego: 0.4}
+  "FABRIC CLEANING":       {global: 0.0, local: 0.6, lego: 0.4}
+  "MINI MEAL":             {global: 0.9, local: 0.0, lego: 0.1}
+  "CONDIMENT":             {global: 0.0, local: 0.4, lego: 0.6}
+  "COOKING AID":           {global: 0.0, local: 0.7, lego: 0.3}
+  "FABRIC ENHANCER":       {global: 0.0, local: 0.3, lego: 0.7}
+  "HOME & HYGIENE":        {global: 0.2, local: 0.3, lego: 0.5}
+  "OTH FOOD":              {global: 0.2, local: 0.3, lego: 0.5}
+  "SKIN CLEANSING":        {global: 0.0, local: 0.3, lego: 0.7}
+  "SKIN CARE":             {global: 0.0, local: 0.1, lego: 0.9}
+  "HEALTH & WELLBEING":    {global: 0.0, local: 0.7, lego: 0.3}
+  "HAIR CARE":             {global: 0.0, local: 0.0, lego: 1.0}
+  "ORAL CARE":             {global: 0.0, local: 0.0, lego: 1.0}
+
+# Fallback for any category not listed above (any future market / category).
+default_weights: {global: 0.0, local: 0.0, lego: 1.0}
+
+# Short-circuit (skip global + local training) for categories whose lego weight
+# is 1.0 -- we just copy prediction_rf to the output. Saves training time.
+short_circuit_lego_only: true

@@ -1,0 +1,162 @@
+# =============================================================================
+# FEU-AGENTIC-FORECASTING — DACH SKIN_CLEANSING (DATABRICKS)
+# =============================================================================
+
+# LLM Provider: "databricks" for Databricks AIF (GPT-5)
+llm_provider: "databricks"
+
+# Databricks Unity Catalog Volumes base path
+databricks_base_path: "/Volumes/pds_feu_931272_dev/data_science_team/dach_rerun/SKIN_CLEANSING/"
+
+# =============================================================================
+# DATA PATHS (resolved relative to databricks_base_path)
+# =============================================================================
+input_data_path: "sourcedata/SKIN_CLEANSING.csv"
+artifact_base_path: "artifacts"
+output_folder_path: "/Volumes/pds_feu_931272_dev/data_science_team/dach_rerun/SKIN_CLEANSING/"
+
+# =============================================================================
+# CORE SCHEMA
+# =============================================================================
+prediction_key_cols:
+  - "key"
+
+timestamp_col: "year_week"
+target_col: "Actuals"
+time_format: "year_week"
+forecast_horizon: 13
+
+# =============================================================================
+# RUN MODE
+# =============================================================================
+# "backtest_and_forecast" — Full pipeline: backtest + forward forecast
+# "forecast_only"         — Train on all history, produce forward forecast only
+# "backtest_only"         — Backtesting for accuracy validation only
+run_mode: "backtest_and_forecast"
+
+# =============================================================================
+# TRAIN / VAL / TEST SPLITS (auto-detected from data)
+# =============================================================================
+train_start: ""
+train_end: ""
+val_start: ""
+val_end: ""
+test_start: ""
+test_end: ""
+
+# =============================================================================
+# DESIGN CONFIGURATION
+# =============================================================================
+design:
+  # Phase 3: Hierarchical Modeling & Features
+  enable_hierarchy_features: true
+  enable_hierarchical_models: true
+  reconciliation_method: "mint_shrink"
+  hierarchy_cols:
+    product:
+      - Market
+      - Business
+      - CorporateBrand
+      - Brand
+      - ForecastFamilyDescription
+      - Segment
+      - GTIN_Description
+  hierarchy_detection:
+    candidate_cols:
+      - Market
+      - Business
+      - CorporateBrand
+      - Brand
+      - ForecastFamilyDescription
+      - Segment
+      - GTIN_Description
+
+  # Feature Availability Detection
+  enable_feature_availability_detection: true
+  auto_detect_features: true
+
+  # Phase 6: Rich Feature Engineering
+  enable_rich_features: true
+
+  # SPLY post-prediction correction (final adjustment)
+  enable_sply_correction: true
+
+  # YoY trend adjustment (pre-reconciliation)
+  enable_yoy_trend_adjustment: false
+
+  # Reviewer agent (false = faster, fewer tokens)
+  enable_reviewer: false
+
+  # Multi-horizon direct forecasting
+  enable_multi_horizon: true
+
+  # Walk-forward cross-validation
+  enable_walk_forward_cv: true
+
+  # Bias calibration
+  apply_bias_calibration: true
+
+  # Top-down category reconciliation (fallback)
+  enable_top_down_reconciliation: true
+
+  bias_calibration_factor_min: 0.5
+  bias_calibration_factor_max: 1.5
+  bias_calibration_buckets: 3
+  reconciliation_yoy_max_deviation: 0.35
+  apply_moq_postprocessing: true
+  parallel_training_workers: 256
+  recursive_validation_lag: 5
+  max_backtest_origins: 8
+
+  feature_availability:
+    recency_enabled: true
+    recency_lookback_periods: 4
+    min_active_keys: 5
+    auto_indicator_enabled: true
+
+  calendar_features:
+    enabled: true
+    overwrite_mode: always
+    include_lead_lag_windows:
+      - 1
+      - 2
+      - 4
+
+  # -------------------------------------------------------------------------
+  # Direct Multi-Horizon (upgrade over recursive inference).
+  #
+  # CATEGORY-AGNOSTIC and MARKET-AGNOSTIC recipe - the ensemble weights are
+  # LEARNED from validation data per dataset (dmh_objective='auto'), so this
+  # same block works for every UK/DE/TH/DACH category without hand-tuning.
+  # See utils/direct_multihorizon.py for the implementation.  Validated on
+  # UK DEO/COOKING: beats PristineTVF benchmark on both WMAPE and |bias|
+  # after filtering the benchmark's exact-match rows.
+  # -------------------------------------------------------------------------
+  use_direct_multi_horizon: true
+  dmh_objective: "auto"
+  dmh_num_leaves: 63
+  dmh_learning_rate: 0.05
+  dmh_min_data_in_leaf: 200
+  dmh_lambda_l2: 1.0
+  dmh_num_boost_round: 3000
+  dmh_early_stopping_rounds: 150
+  dmh_recency_halflife_weeks: 26
+  dmh_sply_blend_alpha: 1.0
+  dmh_n_seeds: 3
+  dmh_top_k_features: 50
+  dmh_smooth_window: 1
+  dmh_enable_trajectory_features: true
+  dmh_enable_apg_features: true
+  dmh_enable_forward_features: true
+
+  # ---------------------------------------------------------------------------
+  # Backtest speed knobs (SAFE — zero accuracy impact).
+  #   - dmh_cache_features_across_origins: load feature CSVs + run augmenters
+  #     ONCE per backtest (was per-origin), saves ~50-120s per origin.
+  #   - dmh_backtest_horizons: [4] = only train h=4 at each origin since the
+  #     lag-4 backtest metric only measures h=4 forecasts (13x cheaper).
+  # ---------------------------------------------------------------------------
+  dmh_cache_features_across_origins: true
+  dmh_backtest_horizons: [4]
+country: DE
+country_subdivision: null

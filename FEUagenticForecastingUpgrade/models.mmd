@@ -1,0 +1,35 @@
+%% Model families overview
+graph LR
+  TB[Tree-based]
+  TB --> LGB[lightgbm]
+  TB --> XGB[xgboost]
+  TB --> CAT[catboost]
+
+  ZH[Zero-handling]
+  ZH --> ZI[zero_inflated]
+  ZH --> HUR[hurdle_model]
+
+  MH[Multi-horizon]
+  MH --> MH_LGB[multi_horizon_lightgbm]
+  MH --> MH_XGB[multi_horizon_xgboost]
+
+  HI[Hierarchical]
+  HI --> GL[global_local]
+  HI --> ME[mixed_effects]
+
+  ST[Statistical]
+  ST --> AR[arima]
+  ST --> ETS[ets]
+
+  DL[Deep Learning]
+  DL --> TFT[tft]
+  DL --> LSTM[lstm]
+
+  ENSEMBLE[stacked_ensemble]
+
+  TB --> ENSEMBLE
+  ZH --> ENSEMBLE
+  MH --> ENSEMBLE
+  HI --> ENSEMBLE
+  ST --> ENSEMBLE
+  DL --> ENSEMBLE

@@ -1,0 +1,441 @@
+# =============================================================================
+# CORE FORECASTING CONFIG REQUIRED BY DemandForecastConfig
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# LLM PROVIDER CONFIGURATION
+# -----------------------------------------------------------------------------
+# Controls which LLM backend to use for the agentic crews.
+# Options:
+#   - "bedrock": AWS Bedrock with Claude (default, for local/AWS deployment)
+#   - "databricks": Databricks AIF with GPT-5 (for Databricks deployment)
+llm_provider: "databricks"
+
+# -----------------------------------------------------------------------------
+# DATABRICKS PATH CONFIGURATION
+# -----------------------------------------------------------------------------
+# Base path for Databricks Unity Catalog Volumes. Only used when llm_provider="databricks".
+# When set, input_data_path and artifact_base_path are resolved relative to this base.
+#
+# Example: "/Volumes/pds_feu_931272_dev/data_science_team/raw_data"
+#
+# With databricks_base_path set:
+#   - input_data_path: "sourcedata/X.csv" → /Volumes/.../sourcedata/X.csv
+#   - artifact_base_path: "artifacts"     → /Volumes/.../artifacts
+#
+# Leave empty ("") to use local filesystem paths (default for bedrock).
+databricks_base_path: "/Volumes/pds_feu_931272_dev/data_science_team/th_run/FACE/"
+
+# -----------------------------------------------------------------------------
+# DATA PATHS
+# -----------------------------------------------------------------------------
+# Path to raw input data. Supported formats: CSV, Parquet, Delta table.
+#
+# Path resolution:
+#   - Relative path: resolved against project root (or databricks_base_path)
+#     e.g. "sourcedata/sales.csv"
+#   - Absolute path: used as-is, can point anywhere on the filesystem
+#     e.g. "/mnt/shared/data/sales.parquet"
+#   - Home-relative: "~/data/sales.csv" (expanded to full path)
+#   - Delta table: path to a directory containing _delta_log/
+#     e.g. "/mnt/delta/sales_table"
+#   - Databricks Volumes: "/Volumes/catalog/schema/data/sales.parquet"
+#
+input_data_path: "sourcedata/FACE.csv"
+
+# Where agentic outputs + model artifacts + final specs will be written
+# Same path resolution rules as input_data_path above.
+artifact_base_path: "artifacts_base"
+
+# Optional: folder for the final inference forecast Parquet output.
+# When set, the inference pipeline writes inference_forecast.parquet here
+# in addition to the CSV in model_artifacts/.
+# Leave blank or omit to disable. Same path resolution rules apply.
+output_folder_path: ""
+
+# Keys that define a unique time series
+prediction_key_cols:
+  - "key"
+
+# Timestamp and target
+timestamp_col: "year_week"
+target_col: "Actuals"
+
+# Time format interpretation
+# - 'year_week' expects YYYYWW-like strings (e.g. 202201, 202521)
+time_format: "year_week"
+
+# -----------------------------------------------------------------------------
+# Feature declarations — derived from the TH data audit on BODY.csv.
+# Columns missing from this category's CSV are gracefully skipped by the
+# feature-engineering and DMH augmenters at runtime.
+# -----------------------------------------------------------------------------
+numeric_feature_cols:
+  - "total_holidays"
+  - "StringencyIndex_mean"
+
+price_features:
+  numeric:
+    - "Discount_Percent"
+  categorical: []
+
+promo_features:
+  numeric:
+    - "promo_seq_num"
+    - "promo_seq_num_0"
+    - "promo_seq_num_1"
+    - "promo_seq_num_2"
+    - "promo_seq_num_3"
+    - "promo_seq_num_4"
+    - "promo_seq_num_5"
+    - "promo_seq_num_6"
+    - "promo_seq_num_7"
+  categorical:
+    - "BOGOF_PROMO"
+    - "COMBO_PROMO"
+    - "LAKSUE_PROMO"
+    - "7ELEVEN_PROMO"
+    - "IsPromo"
+    - "Post_Promotion_Flag"
+    - "Baseline_Flag"
+    - "PromoTionType_Off_Invoice"
+    - "PromoTionType_On_Invoice"
+    - "priceoffdt"
+    - "priceoffoutlettypeoutletlevel"
+    - "bbfoutlettypeoutletlevel"
+    - "buybahtdiscount"
+    - "buybahtfreeutt"
+    - "wdt"
+    - "wedlp"
+    - "wspecialpack"
+    - "wsschemeafreea"
+    - "wsschemeafreeb"
+
+holiday_features:
+  numeric:
+    - "Anniversary_of_the_Death_of_King_Bhumibol"
+    - "Asalha_Bucha"
+    - "Buddhist_Lent_Day"
+    - "Chakri_Day"
+    - "Chinese_Lunar_New_Year_Festive"
+    - "Christmas_&_New_Year_Festive"
+    - "Chulalongkorn_Day"
+    - "Constitution_Day"
+    - "Coronation_Day"
+    - "King_Bhumibols_Birthday"
+    - "King_Vajiralongkorns_Birthday"
+    - "Labor_Day"
+    - "Makha_Bucha"
+    - "Queen_Suthidas_Birthday"
+    - "Royal_Ploughing_Ceremony_Day"
+    - "Songkran_Festive"
+    - "Special_Holiday"
+    - "Special_public_holiday"
+    - "The_Queens_Birthday"
+    - "Visakha_Bucha"
+  categorical:
+    - "holidays"
+
+weather_features:
+  numeric: []
+  categorical:
+    - "Summer"
+    - "Winter"
+    - "Monsoon"
+
+categorical_feature_cols:
+  - "ACTPM_Planning_Account_Code"
+  - "CS_BARCODE"
+  - "APGDescription"
+  - "Face_Flag"
+  - "Week_Duration"
+  - "Month_Start"
+  - "Month_End"
+  - "Quarter_start"
+  - "Quarter_end"
+  - "Week1_flag"
+  - "Week2_flag"
+  - "Week52_flag"
+  - "Week53_flag"
+
+# Forecast horizon in number of periods (weeks, since year_week)
+forecast_horizon: 13
+
+# Train / Val / Test windows (YYYY-WW format to match source data)
+train_start: "202101"
+train_end:   "202520"
+
+val_start:   "202521"
+val_end:     "202538"
+
+test_start:  "202539"
+test_end:    "202604"
+
+# =============================================================================
+# DESIGN-TIME CONFIG FOR AGENTIC MULTI-CREW SYSTEM
+# =============================================================================
+design:
+  # -------------------------------------------------------------------------
+  # Reviewer Agent Toggle (TOKEN OPTIMIZATION)
+  # -------------------------------------------------------------------------
+  # When false (default), skip the reviewer/validation agent in each crew.
+  # This reduces token usage significantly and speeds up execution.
+  # Set to true for production runs where review/validation is critical.
+  enable_reviewer: false
+
+  max_model_candidates_per_group: 5
+  max_hparam_search_depth: 30
+  max_design_iterations: 2
+
+  crew_timeouts:
+    eda: 600
+    segmentation: 600
+    feature: 900
+    training: 10800  # 3 hours - training multiple models per group takes time
+    diagnostics: 900
+
+  # -------------------------------------------------------------------------
+  # Model Families - Complete list of available forecasting models
+  # -------------------------------------------------------------------------
+  # Categories:
+  #   1. Tree-Based (universal): lightgbm, xgboost, catboost, random_forest
+  #   2. Statistical (smooth demand): arima, sarima, ets, theta, tbats
+  #   3. Bayesian/Probabilistic: bsts, prophet
+  #   4. Intermittent Specialists: croston, sba, tsb, imapa
+  #   5. Compound/Hurdle (zero-inflated): zero_inflated, hurdle_model, tweedie
+  #   6. Deep Learning: tft, lstm, nbeats, deepar, wavenet
+  #   7. Ensemble: weighted_ensemble, stacking
+  #
+  # Pattern-to-Model Recommendations:
+  #   SMOOTH (low CV, low zero%): sarima, ets, prophet, lightgbm, xgboost
+  #   ERRATIC (high CV, low zero%): xgboost, lightgbm, theta, bsts
+  #   INTERMITTENT (low CV, high zero%): croston, sba, tsb, zero_inflated
+  #   LUMPY (high CV, high zero%): hurdle_model, zero_inflated, tsb, imapa
+  # -------------------------------------------------------------------------
+  model_families:
+    # Tree-based / Gradient Boosting (universal - works for all patterns)
+    - "lightgbm"
+    - "xgboost"
+    - "catboost"
+    - "random_forest"
+    # Classical Statistical (best for smooth/regular demand)
+    - "arima"
+    - "sarima"
+    - "ets"
+    - "theta"
+    - "tbats"
+    # Bayesian / Probabilistic
+    - "bsts"
+    - "prophet"
+    # Intermittent Demand Specialists (for sparse/lumpy demand)
+    - "croston"
+    - "sba"
+    - "tsb"
+    - "imapa"
+    # Compound / Hurdle Models (two-stage: occurrence + severity)
+    - "zero_inflated"
+    - "hurdle_model"
+    - "tweedie"
+    # Deep Learning (controlled by enable_deep_models)
+    - "tft"
+    - "lstm"
+    - "nbeats"
+    - "deepar"
+    - "wavenet"
+    # Ensemble / Meta Methods
+    - "weighted_ensemble"
+    - "stacking"
+
+  enable_deep_models: false
+
+  # -------------------------------------------------------------------------
+  # Inference Feature Imputation Settings
+  # -------------------------------------------------------------------------
+  # Controls intelligent imputation of missing/zero features during inference.
+  # During forecast periods, external features (price, promo, weather) may be
+  # 0 or missing. This system detects systematically missing features and
+  # imputes them using a tiered strategy:
+  #   Numeric:  Tier 1 = Same-Period-Last-Year (SPLY) per key
+  #             Tier 2 = Category hierarchy group median at SPLY period
+  #   Categorical: Priority 1 = Key-invariant forward-fill
+  #                Priority 2 = SPLY per key
+  #                Priority 3 = Category hierarchy group mode at SPLY
+  # -------------------------------------------------------------------------
+  enable_feature_imputation: true
+  imputation_missing_threshold: 1.0
+  imputation_level: ["APGDescription"]
+  imputation_min_history_for_invariant: 13
+  imputation_enable_recursive_fallbacks: true
+  imputation_enable_trend_adjustment: false
+  imputation_log_details: true
+
+  # -------------------------------------------------------------------------
+  # Diagnostic Metric Levels Configuration
+  # -------------------------------------------------------------------------
+  # These control how forecast accuracy/WAPE are calculated and reported.
+  #
+  # abs_error_calc_levels: Additional levels for absolute error calculation
+  #   - DEFAULT (always included): key × time_period (most granular)
+  #   - Each entry is a list of column names defining aggregation level
+  #   - Actuals and predictions are aggregated to this level FIRST, then error computed
+  #   - Example: [["subgroup", "year_week"]] computes error at subgroup×week level
+  #
+  # diagnostic_metric_levels: Additional levels for WAPE/Accuracy metric reporting
+  #   - DEFAULT (always included): DISCOVERED from per_key_with_segments.csv
+  #     (looks for 'model_group', 'segment_id', 'model_level', or 'cluster' columns)
+  #   - Each entry is a list of column names to group by for reporting
+  #   - WAPE = sum(|errors|) / sum(actuals) for each group
+  #   - Example: [["product_brand_name"]] reports WAPE by brand
+  #
+  # Outputs produced for each combination:
+  #   - wape_errlvl_{error_level}_by_{metric_level}.csv
+  #   - chart_errlvl_{error_level}_by_{metric_level}.png
+  # -------------------------------------------------------------------------
+
+  # Additional error calculation levels (beyond default key × time_period)
+  # Leave empty [] to only use default key × time_period
+  abs_error_calc_levels: [["CS_BARCODE","year_week"],["CS_BARCODE","ACTPM_Planning_Account_Code","year_week"]]
+  # Example with additional levels:
+  # abs_error_calc_levels:
+  #   - ["cust_planning_customer_code", "year_week"]
+  #   - ["product_brand_name", "cust_planning_customer_code", "year_week"]
+
+  # Additional metric aggregation levels (beyond default model grouping column)
+  # Leave empty [] to only use the discovered default (model_group/segment_id)
+  diagnostic_metric_levels: [["ACTPM_Planning_Account_Code"]]
+  # Example with additional levels:
+  # diagnostic_metric_levels:
+  #   - ["product_brand_name"]
+  #   - ["product_segment_name", "product_brand_name"]
+  #   - ["product_segment_name", "product_brand_name", "product_size_pack_name"]
+  #   - ["cust_planning_customer_code"]
+
+  # -------------------------------------------------------------------------
+  # Backtesting Configuration
+  # -------------------------------------------------------------------------
+
+  # -------------------------------------------------------------------------
+  # Validation-Learned Bias Calibration Settings
+  # -------------------------------------------------------------------------
+  # When enabled, learns calibration factors from validation period and applies
+  # them during inference to correct systematic over-forecasting bias.
+  # Calibration is learned per (segment_id, zero_fraction_bucket) - ALWAYS at
+  # segment level for statistical robustness, even for key-level models.
+  # -------------------------------------------------------------------------
+
+  # apply_bias_calibration: Enable/disable the bias calibration system
+  # When true, learns correction factors from validation recursive forecasts
+  # and applies them during production inference.
+  apply_bias_calibration: false
+
+  # bias_calibration_buckets: Number of zero_fraction percentile buckets
+  # Keys are grouped by their zero_fraction into N buckets (e.g., 5 = quintiles)
+  # Calibration factor is learned per (segment_id, bucket) combination.
+  # Range: 2-10, recommended: 5 (quintiles) for balance between granularity and sample size
+  bias_calibration_buckets: 5
+
+  # bias_calibration_factor_min: Minimum allowed calibration factor
+  # Prevents over-correction that reduces predictions too much.
+  # Default 0.2 = predictions won't be reduced by more than 80%
+  # Range: 0.01 to 1.0
+  bias_calibration_factor_min: 0.2
+
+  # bias_calibration_factor_max: Maximum allowed calibration factor
+  # Prevents blow-up that increases predictions too much.
+  # Default 2.0 = predictions won't be increased by more than 2x
+  # Range: 1.0 to 10.0
+  bias_calibration_factor_max: 2.0
+
+  # -------------------------------------------------------------------------
+  # Inference Feature Regeneration Settings
+  # -------------------------------------------------------------------------
+  # Controls whether inference pipeline regenerates features from scratch
+  # using the latest data, or uses pre-computed feature files from training.
+  # -------------------------------------------------------------------------
+
+  # regenerate_features_on_inference: Regenerate features during inference
+  # When true, the inference pipeline will re-compute all features (lags,
+  # rolling averages, derived features) using the latest source data up to
+  # val_end before retraining models. This ensures features reflect the most
+  # recent data available. When false, uses pre-computed feature CSVs from
+  # the training pipeline (faster but potentially stale if new data arrived).
+  regenerate_features_on_inference: true
+
+  # -------------------------------------------------------------------------
+  # Backtesting Feature Regeneration Settings
+  # -------------------------------------------------------------------------
+  # Controls whether backtesting pipeline regenerates features at each origin
+  # point to prevent data leakage from future lag/rolling features.
+  # -------------------------------------------------------------------------
+
+  # regenerate_features_on_backtest: Regenerate features at each backtest origin
+  # When true, the backtesting pipeline will re-compute all features (lags,
+  # rolling averages, derived features) at each origin point using only data
+  # available up to that origin's train_cutoff. This prevents data leakage
+  # where lag features would otherwise contain "future" information relative
+  # to each backtest origin. When false, uses pre-computed feature CSVs
+  # (faster but may give optimistically biased backtest accuracy metrics).
+  # WARNING: Setting to true significantly increases backtest runtime as
+  # features are regenerated for each rolling origin.
+  regenerate_features_on_backtest: true
+
+  # -------------------------------------------------------------------------
+  # Top-Down Category Reconciliation Settings
+  # -------------------------------------------------------------------------
+  # Trains a Prophet model on category-level aggregate demand and uses its
+  # period-wise forecasts to proportionally scale key-level forecasts.
+  # This corrects systematic under/over-forecasting because aggregate
+  # models are inherently more stable and capture trend/seasonality better.
+  # -------------------------------------------------------------------------
+  enable_top_down_reconciliation: false
+  reconciliation_ratio_min: 0.5
+  reconciliation_ratio_max: 2.0
+  reconciliation_trust_band: 0.1
+  reconciliation_changepoint_prior: 0.05
+  reconciliation_yoy_max_deviation: 0.20
+
+  # Optional: column name in source data with binary flag (1=exclude, 0=keep).
+  # Keys with flag=1 have predictions zeroed before category reconciliation.
+  # Leave blank to disable.
+  forward_forecast_exclude_col: ""
+
+  # -------------------------------------------------------------------------
+  # YOY Trend Adjustment Settings (pre-reconciliation)
+  # -------------------------------------------------------------------------
+  # Adjusts key-level forecasts based on observed year-over-year growth
+  # trends. For each key with sufficient history, scales the forward
+  # forecast total to reflect the same YOY growth rate observed in the
+  # pre-period. Runs BEFORE top-down reconciliation.
+  # -------------------------------------------------------------------------
+  enable_yoy_trend_adjustment: false
+  yoy_trend_min_history_periods: 104
+  yoy_trend_scaling_min: 0.5
+  yoy_trend_scaling_max: 2.0
+
+  # -------------------------------------------------------------------------
+  # Direct Multi-Horizon (upgrade over recursive inference).
+  #
+  # CATEGORY-AGNOSTIC and MARKET-AGNOSTIC recipe - the ensemble weights are
+  # LEARNED from validation data per dataset (dmh_objective='auto'), so this
+  # same block works for every UK/DE/TH/DACH category without hand-tuning.
+  # See utils/direct_multihorizon.py for the implementation.  Validated on
+  # UK DEO/COOKING: beats PristineTVF benchmark on both WMAPE and |bias|
+  # after filtering the benchmark's exact-match rows.
+  # -------------------------------------------------------------------------
+  use_direct_multi_horizon: true
+  dmh_objective: "auto"
+  dmh_num_leaves: 63
+  dmh_learning_rate: 0.05
+  dmh_min_data_in_leaf: 200
+  dmh_lambda_l2: 1.0
+  dmh_num_boost_round: 3000
+  dmh_early_stopping_rounds: 150
+  dmh_recency_halflife_weeks: 26
+  dmh_sply_blend_alpha: 1.0
+  dmh_n_seeds: 3
+  dmh_top_k_features: 50
+  dmh_smooth_window: 1
+  dmh_enable_trajectory_features: true
+  dmh_enable_apg_features: true
+  dmh_enable_forward_features: true
+country: TH
