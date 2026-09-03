@@ -25,7 +25,7 @@ try:
 except Exception:
     pass
 if not REPO_PATH or not os.path.isdir(os.path.join(REPO_PATH, "utils")):
-    REPO_PATH = "/Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade"   # <-- fallback: set me
+    REPO_PATH = "/Workspace/Repos/<your_email>/Agentic_Forecasting"   # <-- fallback: set me
 if REPO_PATH not in sys.path:
     sys.path.insert(0, REPO_PATH)
 print("REPO_PATH:", REPO_PATH)

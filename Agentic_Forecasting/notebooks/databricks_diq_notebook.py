@@ -10,15 +10,15 @@
 # Prerequisite: this repository must be available on the cluster. Two common
 # options:
 #   a) Link the repo via Databricks → Repos (clones to
-#      /Workspace/Repos/<user>/FEUagenticForecastingUpgrade), OR
-#   b) Upload the folder to /Workspace/Users/<user>/FEUagenticForecastingUpgrade.
+#      /Workspace/Repos/<user>/Agentic_Forecasting), OR
+#   b) Upload the folder to /Workspace/Users/<user>/Agentic_Forecasting.
 # Either way, set REPO_PATH below to point at the folder.
 # =============================================================================
 
 # COMMAND ----------
 
 import os, sys
-REPO_PATH = "/Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade"
+REPO_PATH = "/Workspace/Repos/<your_email>/Agentic_Forecasting"
 if REPO_PATH not in sys.path:
     sys.path.insert(0, REPO_PATH)
 

@@ -3,7 +3,7 @@
     "allow": [
       "Bash(git remote *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Initial commit: Add FEUagenticForecastingUpgrade project *)"
+      "Bash(git commit -m 'Initial commit: Add Agentic_Forecasting project *)"
     ]
   }
 }

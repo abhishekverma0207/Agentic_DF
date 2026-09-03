@@ -56,7 +56,7 @@
 # COMMAND ----------
 
 import os, sys
-REPO_PATH = "/Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade"
+REPO_PATH = "/Workspace/Repos/<your_email>/Agentic_Forecasting"
 if REPO_PATH not in sys.path:
     sys.path.insert(0, REPO_PATH)
 

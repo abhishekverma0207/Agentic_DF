@@ -1,5 +1,5 @@
 """
-setup.py for the DIQ FEUagenticForecastingUpgrade package.
+setup.py for the DIQ Agentic_Forecasting package.
 
 Lets us pip-install the repo into the cluster's system Python so
 `utils`, `config`, and `crews` are natively importable from every
@@ -8,7 +8,7 @@ workers, Spark executors, notebook kernels, etc.
 
 The init script does:
 
-    pip install --no-deps -e /Workspace/Users/.../FEUagenticForecastingUpgradeGit
+    pip install --no-deps -e /Workspace/Users/.../Agentic_ForecastingGit
 
 After that the closures we hand to Ray can do `from utils.model_training
 import ...` without any working_dir / py_modules / PYTHONPATH gymnastics.

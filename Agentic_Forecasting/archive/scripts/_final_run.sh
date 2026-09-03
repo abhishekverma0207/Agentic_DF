@@ -4,7 +4,7 @@
 # concurrently (separate processes -> no cross-cat memory accrual; the single-process all-9
 # OOM'd). Order interleaves small+big so two big categories don't overlap. Saves predicted
 # (seasonal-corrected) + predicted_raw per category.
-cd "/Users/debonilchowdhury/data_science_debonil/Data_Science_Library/IntelligentPlatform/IntelligentPlatform/FEUagenticForecastingUpgrade" || exit 1
+cd "/Users/debonilchowdhury/data_science_debonil/Data_Science_Library/IntelligentPlatform/IntelligentPlatform/Agentic_Forecasting" || exit 1
 ML=notebooks/rca_outputs/_final_master.log
 : > $ML
 runcat() {

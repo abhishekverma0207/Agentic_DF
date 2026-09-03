@@ -2,7 +2,7 @@
 # Final all-9 rollout: each category in its own process (memory-safe; the single-process
 # all-9 run OOM'd). The category GATE auto-routes: strong-global -> global-only (fast),
 # broken-global (FABRIC-class) -> blind broad per-key. Then the sales-weighted scorecard.
-cd "/Users/debonilchowdhury/data_science_debonil/Data_Science_Library/IntelligentPlatform/IntelligentPlatform/FEUagenticForecastingUpgrade" || exit 1
+cd "/Users/debonilchowdhury/data_science_debonil/Data_Science_Library/IntelligentPlatform/IntelligentPlatform/Agentic_Forecasting" || exit 1
 # FOODS + FABRIC_CLEANING already produced final forecasts via the gate-tests; run the
 # other 7 here. The scorecard aggregates all 9 from the saved _hybrid_oos_fc.parquet files.
 CATS="BODY DEODORANTS_AND_FRAGRANCES FABRIC_ENHANCERS FACE HAIR_CARE HOME_AND_HYGIENE SKIN_CLEANSING"

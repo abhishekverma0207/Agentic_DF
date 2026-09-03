@@ -10,7 +10,7 @@
 # 2. For each category below:
 #    - Name: copy the job name
 #    - Task: Spark Python Task
-#    - Python file: /Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade/databricks_runner.py
+#    - Python file: /Workspace/Repos/<your_email>/Agentic_Forecasting/databricks_runner.py
 #    - Parameters: copy the parameters list
 #    - Cluster: select "eda_stage_cluster_BATCH2" (existing cluster)
 # 3. Click Create → Run Now
@@ -41,10 +41,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_skincare_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_skincare_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -60,10 +60,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_skincleansing_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_skincleansing_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -79,10 +79,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_deo_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_deo_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -98,10 +98,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_dressings_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_dressings_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -117,10 +117,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_fab_clean_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_fab_clean_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -136,10 +136,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_haircare_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_haircare_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -155,10 +155,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_healthy_snack_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_healthy_snack_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -174,10 +174,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_home_hygiene_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_home_hygiene_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -193,10 +193,10 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_oral_care_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_oral_care_databricks.yaml"
               - "--stage"
               - "full"
 
@@ -212,9 +212,9 @@ resources:
         - task_key: "full_pipeline"
           existing_cluster_id: "${var.cluster_id}"
           spark_python_task:
-            python_file: "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/databricks_runner.py"
+            python_file: "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/databricks_runner.py"
             parameters:
               - "--config"
-              - "/Workspace/Repos/${var.repo_user}/FEUagenticForecastingUpgrade/config/config_de_cooking_aids_databricks.yaml"
+              - "/Workspace/Repos/${var.repo_user}/Agentic_Forecasting/config/config_de_cooking_aids_databricks.yaml"
               - "--stage"
               - "full"

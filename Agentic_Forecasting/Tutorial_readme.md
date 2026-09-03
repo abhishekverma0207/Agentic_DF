@@ -1,12 +1,12 @@
 Reading the repository README to extract its structure and key points so I can build a knowledge chart, concise bullet summaries, and text-based infographics. Opening the README.md now.
 
-Read [](file:///c%3A/Abhishek/UL_Project/FEUagenticForecastingUpgrade/FEUagenticForecastingUpgrade/README.md)
+Read [](file:///c%3A/Abhishek/UL_Project/Agentic_Forecasting/Agentic_Forecasting/README.md)
 
-Read [](file:///c%3A/Abhishek/UL_Project/FEUagenticForecastingUpgrade/FEUagenticForecastingUpgrade/README.md), lines 1 to 200
+Read [](file:///c%3A/Abhishek/UL_Project/Agentic_Forecasting/Agentic_Forecasting/README.md), lines 1 to 200
 
-Read [](file:///c%3A/Abhishek/UL_Project/FEUagenticForecastingUpgrade/FEUagenticForecastingUpgrade/README.md), lines 200 to 400
+Read [](file:///c%3A/Abhishek/UL_Project/Agentic_Forecasting/Agentic_Forecasting/README.md), lines 200 to 400
 
-Read [](file:///c%3A/Abhishek/UL_Project/FEUagenticForecastingUpgrade/FEUagenticForecastingUpgrade/README.md), lines 400 to 800
+Read [](file:///c%3A/Abhishek/UL_Project/Agentic_Forecasting/Agentic_Forecasting/README.md), lines 400 to 800
 
 "Read" failed
 

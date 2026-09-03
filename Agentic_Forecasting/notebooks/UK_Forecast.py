@@ -1,17 +1,14 @@
 # Databricks notebook source
 # =============================================================================
-# DE_Forecast — STEP 2 of 2: apply the fitted weights -> forward forecast
+# UK_Forecast — STEP 2 of 2: apply the fitted weights -> forward forecast (UK)
 # =============================================================================
-# Uses the weights from STEP 1 (DE_FitWeights -> config/de_ensemble_weights.yaml).
-# For the LIVE snapshot:
-#   * LEGO present  (DT/, FS/, TF_pristine_allkeys.prediction_xgb) -> SKIP LEGO
-#   * LEGO missing  + RUN_LEGO_IF_MISSING=true -> build it via dbutils.notebook.run on
-#                     LEGO_RUN_DE_PARAM (DEMANDIQ_RUN_FLAG=false: LEGO + prediction_xgb only)
+# Identical methodology to DE_Forecast; only UK defaults differ. Uses the weights from
+# STEP 1 (UK_FitWeights -> config/uk_ensemble_weights.yaml). For the LIVE snapshot:
+#   * LEGO present  (01_all_keys_dr_adjusted/, FS/, TF_pristine_allkeys.prediction_rf) -> SKIP
+#   * LEGO missing  + RUN_LEGO_IF_MISSING=true -> build it (set LEGO_RUN_NOTEBOOK); default OFF
 #   * run the DIQ (segment engine) applying the FROZEN weights -> write the forecast parquet
-#
-# Same call the production fan-out makes (DIQ_run_wrapper -> run_diq_forecast, market=de),
-# but in ONE notebook over all categories, and it ENSURES the LEGO benchmark exists BEFORE
-# forecasting (so there's no read-before-write ordering gotcha). Set REPO_PATH, "Run All".
+#   * write the DIQ stacked forecast into TF_pristine_allkeys.ml_pred_final (LEFT join, no row loss)
+# Set REPO_PATH, "Run All".
 # =============================================================================
 
 # COMMAND ----------
@@ -26,30 +23,29 @@ try:
 except Exception:
     pass
 if not REPO_PATH or not os.path.isdir(os.path.join(REPO_PATH, "utils")):
-    REPO_PATH = "/Workspace/Repos/<your_email>/FEUagenticForecastingUpgrade"   # <-- fallback: set me
+    REPO_PATH = "/Workspace/Repos/<your_email>/Agentic_Forecasting"   # <-- fallback: set me
 if REPO_PATH not in sys.path:
     sys.path.insert(0, REPO_PATH)
 print("REPO_PATH:", REPO_PATH)
 
 # COMMAND ----------
 
-# ---- DE LIVE config ----
-dbutils.widgets.text("PARENT_DIR",     "/Volumes/pds_feu_931272_dev/eu_dach/transform/DACH/DACH_LEGO/Germany/parallel_run")
-dbutils.widgets.text("LIVE_SNAPSHOT",  "202621")     # week to forecast FROM (first forward week)
-dbutils.widgets.text("HISTORY_TILL",   "202620")     # last week of known actuals (= LIVE_SNAPSHOT - 1)
+# ---- UK LIVE config ----
+dbutils.widgets.text("PARENT_DIR",     "/Volumes/pds_feu_931272_dev/eu_uk/landing/UK_PROD_NEW/lego_runs/forward_run/total_forecast/snapshot")
+dbutils.widgets.text("LIVE_SNAPSHOT",  "2026-23")     # week to forecast FROM (first forward week)
+dbutils.widgets.text("HISTORY_TILL",   "202622")      # last week of known actuals (= LIVE_SNAPSHOT - 1)
 dbutils.widgets.text("CATEGORY_LIST",
-    "SCRATCH COOKING AIDS#DEODORANTS & FRAGRANCES#DRESSINGS#SKIN CLEANSING#HEALTHY SNACKING#"
-    "HOME & HYGIENE#FABRIC CLEANING#ORAL CARE#SKIN CARE#HAIR CARE")              # '#'- or ','-separated
-dbutils.widgets.text("WEIGHTS_PATH",   "")           # blank -> config/de_ensemble_weights.yaml (committed)
-dbutils.widgets.text("OUT_PATH",       "")           # blank -> {LIVE All_Cat}/DIQ/TF_DIQ/de_{snap}_inference_forecast.parquet
-dbutils.widgets.dropdown("RUN_LEGO_IF_MISSING", "true", ["true", "false"])
-dbutils.widgets.text("LEGO_RUN_NOTEBOOK",
-    "/Workspace/Users/anu.thomas@unilever.com/DACH_Industrialized/ParallelRun_Scripts/DE/LEGO_RUN_DE_PARAM")
+    "BEVERAGE#CONDIMENT#COOKING AID#DEODORANT & FRAGRANCE#FABRIC CLEANING#FABRIC ENHANCER#HAIR CARE#"
+    "HEALTH & WELLBEING#HOME & HYGIENE#MINI MEAL#ORAL CARE#OTH FOOD#SKIN CARE#SKIN CLEANSING")  # '#'- or ','-separated
+dbutils.widgets.text("WEIGHTS_PATH",   "")           # blank -> config/uk_ensemble_weights.yaml (committed)
+dbutils.widgets.text("OUT_PATH",       "")           # blank -> {LIVE}/DIQ/TF_DIQ/uk_{snap}_inference_forecast.parquet
+dbutils.widgets.dropdown("RUN_LEGO_IF_MISSING", "false", ["true", "false"])
+dbutils.widgets.text("LEGO_RUN_NOTEBOOK", "")        # UK forward-run LEGO entry (set if RUN_LEGO_IF_MISSING=true)
 dbutils.widgets.text("ENGINE_WORKERS", "2")
 dbutils.widgets.text("ENGINE_THREADS", "8")
 dbutils.widgets.dropdown("UPDATE_TF_PRISTINE", "true", ["true", "false"])  # write ml_pred_final into TF_pristine_allkeys
-dbutils.widgets.text("LEGO_PRED_COL", "prediction_xgb")  # ml_pred_final fallback where a key isn't in the DIQ forecast
-dbutils.widgets.text("TF_PRISTINE_PATH", "")             # blank -> {LIVE All_Cat}/TF_pristine_allkeys
+dbutils.widgets.text("LEGO_PRED_COL", "prediction_rf")  # ml_pred_final fallback where a key isn't in the DIQ forecast
+dbutils.widgets.text("TF_PRISTINE_PATH", "")             # blank -> {LIVE}/TF_pristine_allkeys
 
 W = lambda k: dbutils.widgets.get(k).strip()
 PARENT_DIR        = W("PARENT_DIR").rstrip("/")
@@ -60,17 +56,18 @@ LEGO_RUN_NOTEBOOK = W("LEGO_RUN_NOTEBOOK")
 os.environ["UK_ENGINE_WORKERS"] = W("ENGINE_WORKERS")
 os.environ["UK_ENGINE_THREADS"] = W("ENGINE_THREADS")
 
-MARKET, ALLCAT, PANEL, FS_SUB = "de", "All_Cat", "DT", "FS"
-BENCH_SUB, BENCH_COL = "TF_pristine_allkeys", "prediction_xgb"
+# UK conventions (mirror config_uk_base_local.py market_io). NO All_Cat level for UK.
+MARKET, PANEL, FS_SUB = "uk", "01_all_keys_dr_adjusted", "FS"
+BENCH_SUB, BENCH_COL = "TF_pristine_allkeys", "prediction_rf"
 CONFIG_ROOT = os.path.join(REPO_PATH, "config")
-allcat_dir  = lambda s: f"{PARENT_DIR}/{s}/{ALLCAT}"
-LIVE_DIR    = allcat_dir(LIVE_SNAPSHOT)
+snap_dir    = lambda s: f"{PARENT_DIR}/{s}"          # no All_Cat for UK
+LIVE_DIR    = snap_dir(LIVE_SNAPSHOT)
 
 cats         = [c.strip() for c in W("CATEGORY_LIST").replace(",", "#").split("#") if c.strip()]
-WEIGHTS_PATH = W("WEIGHTS_PATH") or f"{CONFIG_ROOT}/de_ensemble_weights.yaml"
-OUT_PATH     = W("OUT_PATH") or f"{LIVE_DIR}/DIQ/TF_DIQ/de_{LIVE_SNAPSHOT}_inference_forecast.parquet"
+WEIGHTS_PATH = W("WEIGHTS_PATH") or f"{CONFIG_ROOT}/uk_ensemble_weights.yaml"
+OUT_PATH     = W("OUT_PATH") or f"{LIVE_DIR}/DIQ/TF_DIQ/uk_{LIVE_SNAPSHOT}_inference_forecast.parquet"
 UPDATE_TF     = W("UPDATE_TF_PRISTINE").lower() == "true"
-LEGO_PRED_COL = W("LEGO_PRED_COL") or "prediction_xgb"
+LEGO_PRED_COL = W("LEGO_PRED_COL") or "prediction_rf"
 TF_PRISTINE   = W("TF_PRISTINE_PATH") or f"{LIVE_DIR}/{BENCH_SUB}"   # BENCH_SUB = TF_pristine_allkeys
 
 import pyspark.sql.functions as F
@@ -95,7 +92,7 @@ def _has_parquet(p):
     return any(f.name.endswith(".parquet") or f.name.startswith("part-") or f.isDir() for f in _ls(p))
 
 def lego_ready(snap):
-    pdir = allcat_dir(snap)
+    pdir = snap_dir(snap)
     need = {PANEL: f"{pdir}/{PANEL}", FS_SUB: f"{pdir}/{FS_SUB}", BENCH_SUB: f"{pdir}/{BENCH_SUB}"}
     missing = [k for k, p in need.items() if not _has_parquet(p)]
     if missing:
@@ -111,22 +108,21 @@ ready, why = lego_ready(LIVE_SNAPSHOT)
 if ready:
     print(f"[{LIVE_SNAPSHOT}] LEGO present -> SKIP LEGO")
 elif not RUN_LEGO:
-    raise RuntimeError(f"[{LIVE_SNAPSHOT}] LEGO missing ({why}) and RUN_LEGO_IF_MISSING=false. Run "
-                       f"DE_AllCAT_PARALLEL_RUN for {LIVE_SNAPSHOT} first, or set RUN_LEGO_IF_MISSING=true.")
+    raise RuntimeError(f"[{LIVE_SNAPSHOT}] LEGO missing ({why}) and RUN_LEGO_IF_MISSING=false. Produce the UK "
+                       f"forward-run LEGO for {LIVE_SNAPSHOT} upstream first, or set RUN_LEGO_IF_MISSING=true.")
 else:
     if not LEGO_RUN_NOTEBOOK:
-        raise RuntimeError("RUN_LEGO_IF_MISSING=true but LEGO_RUN_NOTEBOOK is blank.")
-    print(f"[{LIVE_SNAPSHOT}] LEGO missing ({why}) -> running {LEGO_RUN_NOTEBOOK} (DEMANDIQ_RUN_FLAG=false) ...")
+        raise RuntimeError("RUN_LEGO_IF_MISSING=true but LEGO_RUN_NOTEBOOK is blank (set the UK LEGO entry).")
+    print(f"[{LIVE_SNAPSHOT}] LEGO missing ({why}) -> running {LEGO_RUN_NOTEBOOK} ...")
     dbutils.notebook.run(LEGO_RUN_NOTEBOOK, 6 * 60 * 60, {
-        "HISTORY_CUT_OFF": add_weeks(LIVE_SNAPSHOT, -1), "SNAPSHOT_WEEK": LIVE_SNAPSHOT,
-        "DEMANDIQ_RUN_FLAG": "false", "PARENT_DIR": LIVE_DIR, "MARKET": MARKET})
+        "SNAPSHOT_WEEK": LIVE_SNAPSHOT, "PARENT_DIR": LIVE_DIR, "MARKET": MARKET})
     ready, why = lego_ready(LIVE_SNAPSHOT)
     if not ready:
         raise RuntimeError(f"[{LIVE_SNAPSHOT}] LEGO run did not produce required artifacts: {why}")
 
 # weights from STEP 1 must exist
 if not os.path.exists(WEIGHTS_PATH):
-    raise RuntimeError(f"Weights not found at {WEIGHTS_PATH}. Run STEP 1 (DE_FitWeights) first, or point "
+    raise RuntimeError(f"Weights not found at {WEIGHTS_PATH}. Run STEP 1 (UK_FitWeights) first, or point "
                        f"WEIGHTS_PATH at the committed config or the Volume copy.")
 print("Weights found:", WEIGHTS_PATH)
 
@@ -145,9 +141,9 @@ stacked = run_diq_forecast(
     category_list=cats,
     out_path=OUT_PATH,
     market=MARKET,
-    cats_subdir=PANEL,            # DT
+    cats_subdir=PANEL,            # 01_all_keys_dr_adjusted
     fs_subdir=FS_SUB,             # FS
-    category_col="Category",
+    category_col="category_name",
     config_root=CONFIG_ROOT,
     uk_weights_path=WEIGHTS_PATH, # the fitted per-(category x segment) weights from STEP 1
 )
@@ -160,7 +156,7 @@ print(f"Written to   : {OUT_PATH}")
 # MAGIC ## STAGE C — write the DIQ stacked forecast into `TF_pristine_allkeys.ml_pred_final`
 # MAGIC LEFT-join onto TF_pristine_allkeys so **every row is kept**. `ml_pred_final` = the DIQ stacked
 # MAGIC `predicted` where the (key, year_week) is in the DIQ forecast, else the LEGO column
-# MAGIC (`LEGO_PRED_COL`, default `prediction_xgb`). A hard row-count assertion + temp-swap overwrite
+# MAGIC (`LEGO_PRED_COL`, default `prediction_rf`). A hard row-count assertion + temp-swap overwrite
 # MAGIC guarantee no rows are lost. Set `UPDATE_TF_PRISTINE=false` to skip.
 
 # COMMAND ----------
@@ -168,7 +164,6 @@ print(f"Written to   : {OUT_PATH}")
 if not UPDATE_TF:
     print("UPDATE_TF_PRISTINE=false -> skipping the TF_pristine_allkeys update.")
 else:
-    # DIQ stacked output -> normalized + de-duped on (key, year_week); unique helper names avoid join collisions
     diq = stacked[["key", "year_week", "predicted"]].copy()
     diq["_dk"] = diq["key"].astype(str)
     diq["_dyw"] = diq["year_week"].astype(str).str.replace("-", "", regex=False)
@@ -184,11 +179,9 @@ else:
     fallback = LEGO_PRED_COL if LEGO_PRED_COL in cols0 else "ml_pred_final"
     print(f"TF_pristine rows={n0:,} | DIQ (key×week)={len(diq):,} | unmatched fallback col = '{fallback}'")
 
-    # LEFT join (keep every TF_pristine row); normalize year_week on both sides to match formats
     tfj = (tf.withColumn("_k", F.col("key").cast("string"))
              .withColumn("_yw", F.regexp_replace(F.col("year_week").cast("string"), "-", "")))
     j = tfj.join(diq_sdf, (tfj["_k"] == diq_sdf["_dk"]) & (tfj["_yw"] == diq_sdf["_dyw"]), "left")
-    # ml_pred_final = DIQ stacked where matched, else the LEGO column (else keep the existing value)
     j = j.withColumn("ml_pred_final", F.coalesce(F.col("_diq_pred"), F.col(fallback), F.col("ml_pred_final")))
     if "source" in cols0:
         j = j.withColumn("source", F.when(F.col("_diq_pred").isNotNull(),
@@ -198,7 +191,6 @@ else:
     n1 = result.count()
     assert n1 == n0, f"ROW COUNT CHANGED {n0} -> {n1} — aborting, NOT writing TF_pristine_allkeys."
 
-    # safe in-place overwrite: write temp -> re-read temp -> overwrite original FROM temp -> drop temp
     tmp = TF_PRISTINE.rstrip("/") + "_diqtmp"
     result.write.mode("overwrite").parquet(tmp)
     staged = spark.read.parquet(tmp)

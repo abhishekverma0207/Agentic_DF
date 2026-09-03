@@ -10,7 +10,7 @@ new duplicates from being written — see commit 24e243f.
 Usage in a Databricks notebook (recommended):
     1. Open a new cell.
     2. Paste:
-           %run /Workspace/.../FEUagenticForecastingUpgradeGit/cleanup_dead_key_duplicates.py
+           %run /Workspace/.../Agentic_ForecastingGit/cleanup_dead_key_duplicates.py
        OR copy the function body inline.
     3. Edit the IN_PATH / KEY_COL / DATE_COL / PREDICTED_COL constants
        below (or call cleanup(...) directly with overrides).

@@ -23,7 +23,7 @@ print(f"Using cluster: {CLUSTER_ID}")
 REPO_USER = dbutils.notebook.entry_point.getDbutils().notebook().getContext().userName().get()
 print(f"Repo user: {REPO_USER}")
 
-REPO_PATH = f"/Workspace/Repos/{REPO_USER}/FEUagenticForecastingUpgrade"
+REPO_PATH = f"/Workspace/Repos/{REPO_USER}/Agentic_Forecasting"
 print(f"Repo path: {REPO_PATH}")
 
 # COMMAND ----------
